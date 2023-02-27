@@ -18,9 +18,12 @@ if(isset($_GET["AnnounceId"])){//check the id
     <link rel="stylesheet" href="../css/home.css">
   </head>
   <body>
-    <div class = "card-wrapper">
-      <div class = "card">
-        <div class = "product-imgs">
+    <div>
+      </div>
+      <div class = "card-wrapper">
+        <div class = "card">
+          <div class = "product-imgs">
+          <button class="btn"><a href="user.php">Back home</a></button>
           <div class = "img-display">
             <div class = "img-showcase">
               <img src = "../img/1.png" alt = "shoe image">
@@ -69,12 +72,30 @@ if(isset($_GET["AnnounceId"])){//check the id
               <li>Zip Code: <span><?php if(isset($_GET["AnnounceId"])){echo $array["ZipCode"];} ?></span></li>
             </ul>
           </div>
-          <div class = "purchase-info">
-            <button type = "button" class = "btn">Contact Seller</button>
+          <div class="purchase-info">
+            <button class="btn" onclick="document.getElementById('product_info').style.display='block';" id="del">Contact Seller</button>
           </div>
         </div>
       </div>
     </div>
+
+
+    <div id="product_info" class="product_info" style="display: none;">
+        <div class="content">
+          <span onclick="document.getElementById('product_info').style.display='none'" class='close' title="Close">&#10005;</span>
+          <h2>Message</h2>
+          <hr>
+          <div id="message">
+            <h3>that is the seller number :</h3>
+            <p><?php if(isset($_GET["AnnounceId"])){echo $array["Phone"];} ?></p>
+          </div>
+          <hr>
+          <div class="btns">
+          <a  onclick="document.getElementById('product_info').style.display='none'" class="cancel">CANCEL</a>
+          </div>
+      </div>
+    </div>
+
     <script src="../js/app.js"></script>
   </body>
 </html>

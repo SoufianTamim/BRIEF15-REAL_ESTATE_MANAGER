@@ -135,3 +135,121 @@ img {
 .fadeIn-bottom {
   top: 80%;
 }
+
+
+
+
+#md {
+  display: none;
+}
+.cancelbtn {
+background-color: #a394af;
+height: 48px;
+padding: 0 24px 0 16px;
+letter-spacing: .25px;
+border-radius: 24px;
+cursor: pointer;
+color: whitesmoke;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+
+}
+.close{
+  display: flex;
+  font-size: 1.4rem;
+
+  justify-content: flex-end;
+  padding-right: 30px;
+  padding-top: 15px;
+  cursor: pointer;
+  color: rgb(255, 72, 72);
+  font-weight: 800;
+}
+
+.modal-content, .content{
+  display: block;
+  margin: auto;
+  padding: 16px;
+  text-align: center;
+  background-color: whitesmoke;
+  width: 50%;
+  border-radius: 30px;
+  margin-bottom: 30px;
+}
+.cont{
+  display: block;
+  margin: auto;
+  padding: 16px;
+  background-color: whitesmoke;
+  width: 50%;
+  border-radius: 30px;
+  margin-bottom: 30px;
+}
+
+h2{
+  font-size: 2rem;
+  margin: 1rem;
+  text-align: center;
+}
+h3{
+  font-size: 1.5rem;
+}
+.cancel{
+  font-size: 1.4rem;
+  margin-left: 2rem;
+}
+p{
+  font-size: 1rem;
+}
+.btns{
+  display: flex;
+  justify-content: end;
+  color:rgb(255, 72, 72);
+  margin: 2rem;
+  
+}
+hr{
+  color: green;
+
+}
+#message h3{
+  margin: 2rem;
+  font-size: 1.4rem;
+  color: #565656;
+}
+.del{
+  color:rgb(255, 122, 122);
+  margin-left: 2rem;
+  font-size: 1.4rem;
+
+}
+.cls{
+  background-color: green;
+  font-size: 1.4rem;
+}
+.modal, .product_info{
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 5%; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+#message span{
+  line-height: 2.5;
+  font-size: 1.2rem;
+  word-spacing: 10px;
+}
+#message{
+  text-align: start;
+}
+
+#details{
+  flex-direction: column;
+}
