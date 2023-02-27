@@ -1,54 +1,47 @@
 <?php
-require "connect.php";
+require_once 'connect.php';
 
-// Check if form is submitted
-if (isset($_POST['deleteBtn'])) {
+if (isset($_POST['delete'])) {
+  try {
+    $conn->beginTransaction(); // Begin the transaction
 
-    // Get the ID of the record to be deleted
-    $id = $_POST['id'];
+    // Get the property ID to delete from the form input
+    $property_id = $_POST['property_id'];
 
-    // Prepare SQL statement to delete the record
-    $stmt = $pdo->prepare("DELETE FROM annonces WHERE id = :id");
-
-    // Bind the ID parameter
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-    // Execute the statement
+    // Delete the images associated with the property from the images_gallery table
+    $stmt = $conn->prepare("DELETE FROM images_gallery WHERE property_id = :property_id");
+    $stmt->bindParam(':property_id', $property_id);
     $stmt->execute();
 
-    // Check if the primary image exists and delete it
-    $stmt = $pdo->prepare("SELECT primary_image FROM annonces WHERE id = :id");
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $primaryImage = $row['primary_image'];
-    if (file_exists('uploads/' . $primaryImage)) {
-        unlink('uploads/' . $primaryImage);
-    }
-
-    // Check if any secondary images exist and delete them
-    $stmt = $pdo->prepare("SELECT image FROM secondary_images WHERE announcement_id = :announcement_id");
-    $stmt->bindParam(':announcement_id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($rows as $row) {
-        $image = $row['image'];
-        if (file_exists('uploads/' . $image)) {
-            unlink('uploads/' . $image);
-        }
-    }
-
-    // Prepare SQL statement to delete the secondary images
-    $stmt = $pdo->prepare("DELETE FROM secondary_images WHERE announcement_id = :announcement_id");
-
-    // Bind the announcement ID parameter
-    $stmt->bindParam(':announcement_id', $id, PDO::PARAM_INT);
-
-    // Execute the statement
+    // Delete the property from the real_estate_gallery table
+    $stmt = $conn->prepare("DELETE FROM real_estate_gallery WHERE id = :property_id");
+    $stmt->bindParam(':property_id', $property_id);
     $stmt->execute();
 
-    // Redirect to the announcements page
-    header('Location: announcements.php');
-    exit();
+    // Commit the transaction
+    $conn->commit();
+
+    // Use HTTP status code to indicate success
+    http_response_code(200);
+
+    // Display success message
+    echo "Property deleted successfully";
+  } catch (PDOException $e) {
+    // Rollback the transaction if an error occurred
+    $conn->rollback();
+
+    // Use HTTP status code to indicate error
+    http_response_code(500);
+
+    // Display error message
+    echo "Error: " . $e->getMessage();
+  }
 }
+
+// Close the prepared statement and database connection
+$stmt = null;
+$conn = null;
+// Redirect to another PHP file
+header("Location: profile.php");
+exit;
 ?>

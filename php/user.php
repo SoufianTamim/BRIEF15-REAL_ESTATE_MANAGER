@@ -55,9 +55,9 @@ if(isset($_GET['pageId'])){
 $endIndex = $pageId * 8;
 $StartIndex  = $endIndex - 8 ;
 
-$announcesDATA = $conn->query("SELECT * FROM annonce Limit 8 OFFSET $StartIndex")->fetchAll(PDO::FETCH_ASSOC);
+$announcesDATA = $conn->query("SELECT * FROM real_estate_gallery Limit 8 OFFSET $StartIndex")->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = 'SELECT * FROM annonce';
+$sql = 'SELECT * FROM real_estate_gallery';
 
 // execute a query
 $annoncesLength = $conn->query($sql)->rowCount();
@@ -137,13 +137,13 @@ if(($annoncesLength % 8 ) == 0){
             ?>
                 <div class="card">
                     <div class="content"> 
-                        <a href="details.php?AnnounceId=<?php echo $val['AnnounceId'];?>">
+                        <a href="details.php?id=<?php echo $val['id'];?>">
                             <div class="content-overlay">
                             </div> 
                             <img class="content-image" src="../img/img.jpg">
                             <div class="content-details fadeIn-bottom">
-                                <h3 class="content-title"><?php echo $val['Tittle'];?></h3>
-                                <p class="content-text"><i class="fa fa-map-marker"></i><?php echo $val['Country'];?>,<?php echo $val['City'];?></p>
+                                <h3 class="content-title"><?php echo $val['title'];?></h3>
+                                <p class="content-text"><i class="fa fa-map-marker"></i><?php echo $val['country'];?>,<?php echo $val['city'];?></p>
                             </div>
                         </a> 
                     </div>
@@ -153,15 +153,15 @@ if(($annoncesLength % 8 ) == 0){
           } else if ($_SERVER["REQUEST_METHOD"] == "POST") { //check if the method is post
               foreach($FilterResult as $key => $val) { //loops in the table of annonce with filterd data and display the in cards 
                       ?>
-                        <div class="card    ">
+                        <div class="card">
                             <div class="content"> 
-                                <a href="details.php?AnnounceId=<?php echo $val['AnnounceId'];?>">
+                                <a href="details.php?id=<?php echo $val['id'];?>">
                                     <div class="content-overlay">
                                     </div> 
                                     <img class="content-image" src="../img/img.jpg">
                                     <div class="content-details fadeIn-bottom">
-                                        <h3 class="content-title"><?php echo $val['Tittle'];?></h3>
-                                        <p class="content-text"><i class="fa fa-map-marker"></i> Russia</p>
+                                        <h3 class="content-title"><?php echo $val['title'];?></h3>
+                                        <p class="content-text"><i class="fa fa-map-marker"></i><?php echo $val['country'];?>,<?php echo $val['city'];?></p>
                                     </div>
                                 </a> 
                             </div>

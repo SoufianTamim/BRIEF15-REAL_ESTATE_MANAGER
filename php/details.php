@@ -1,9 +1,9 @@
 <?php 
 require "connect.php";//connect to the db
-if(isset($_GET["AnnounceId"])){//check the id
-  $AnnounceId = $_GET["AnnounceId"];
+if(isset($_GET["id"])){//check the id
+  $id = $_GET["id"];
   //store the request for annouce table and run it
-  $query = $conn->query("SELECT * FROM Annonce WHERE `AnnounceId` = $AnnounceId"); 
+  $query = $conn->query("SELECT * FROM Annonce WHERE `id` = $id"); 
   $array = $query->fetch(PDO::FETCH_ASSOC);
 } 
 ?>
@@ -56,20 +56,20 @@ if(isset($_GET["AnnounceId"])){//check the id
           </div>
         </div>
         <div class = "product-content">
-          <h2 class = "product-title"><?php if(isset($_GET["AnnounceId"])){echo $array["Tittle"];} ?></h2>
-          <a href = "#" class = "product-link"><?php if(isset($_GET["AnnounceId"])){echo $array["Category"];} ?></a>
+          <h2 class = "product-title"><?php if(isset($_GET["id"])){echo $array["Tittle"];} ?></h2>
+          <a href = "#" class = "product-link"><?php if(isset($_GET["id"])){echo $array["Category"];} ?></a>
           <div class = "product-price">
-            <p class = "new-price">Price: <span><?php if(isset($_GET["AnnounceId"])){echo $array["Price"];} ?> DH</span></p>
+            <p class = "new-price">Price: <span><?php if(isset($_GET["id"])){echo $array["Price"];} ?> DH</span></p>
           </div>
           <div class = "product-detail">
             <h2>Description :</h2>
-            <p><?php if(isset($_GET["AnnounceId"])){echo $array["Descripton"];} ?></p>
+            <p><?php if(isset($_GET["id"])){echo $array["Descripton"];} ?></p>
             <ul>
-              <li>Size : <span><?php if(isset($_GET["AnnounceId"])){echo $array["Size"];} ?> m2</span></li>
-              <li>Category: <span><?php if(isset($_GET["AnnounceId"])){echo $array["Category"];} ?></span></li>
-              <li>Location : <span><?php if(isset($_GET["AnnounceId"])){echo $array["Country"];} ?>,<?php if(isset($_GET["AnnounceId"])){echo $array["City"];} ?></span></li>
-              <li>Publication Date: <span><?php if(isset($_GET["AnnounceId"])){echo $array["PublishDate"];} ?></span></li>
-              <li>Zip Code: <span><?php if(isset($_GET["AnnounceId"])){echo $array["ZipCode"];} ?></span></li>
+              <li>Size : <span><?php if(isset($_GET["id"])){echo $array["Size"];} ?> m2</span></li>
+              <li>Category: <span><?php if(isset($_GET["id"])){echo $array["Category"];} ?></span></li>
+              <li>Location : <span><?php if(isset($_GET["id"])){echo $array["Country"];} ?>,<?php if(isset($_GET["id"])){echo $array["City"];} ?></span></li>
+              <li>Publication Date: <span><?php if(isset($_GET["id"])){echo $array["PublishDate"];} ?></span></li>
+              <li>Zip Code: <span><?php if(isset($_GET["id"])){echo $array["ZipCode"];} ?></span></li>
             </ul>
           </div>
           <div class="purchase-info">
@@ -87,7 +87,7 @@ if(isset($_GET["AnnounceId"])){//check the id
           <hr>
           <div id="message">
             <h3>that is the seller number :</h3>
-            <p><?php if(isset($_GET["AnnounceId"])){echo $array["Phone"];} ?></p>
+            <p><?php if(isset($_GET["id"])){echo $array["Phone"];} ?></p>
           </div>
           <hr>
           <div class="btns">

@@ -1,123 +1,84 @@
-<?php
-// Database connection parameters
-$host = 'localhost';
-$dbname = 'your_database_name';
-$username = 'your_database_username';
-$password = 'your_database_password';
+<?php 
+require_once 'connect.php';
 
-// Create PDO object and set error mode to exceptions
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
+$conn->beginTransaction(); // Begin the transaction
 
-// Check if form is submitted
-if (isset($_POST['updateBtn'])) {
+// Retrieving form data
+$property_id = $_POST['property_id'];
+$title = $_POST['title'];
+$category = $_POST['category'];
+$price = $_POST['price'];
+$address = $_POST['address'];
+$surface = $_POST['surface'];
+$type = $_POST['type'];
+$description = $_POST['description'];
+$area = $_POST['area'];
+$zip_code = $_POST['zipCode'];
+$city = $_POST['city'];
+$country = $_POST['country'];
 
-    // Get form inputs
-    $id = $_POST['id'];
-    $title = $_POST['title'];
-    $price = $_POST['price'];
-    $address = $_POST['address'];
-    $superficie = $_POST['superficie'];
-    $type = $_POST['type'];
-    $description = $_POST['description'];
+// Update data in real_estate_gallery table
+$stmt = $conn->prepare("UPDATE real_estate_gallery SET title = :title, category = :category, price = :price, address = :address, surface = :surface, type = :type, description = :description, area = :area, zip_code = :zip_code, city = :city, country = :country WHERE id = :property_id");
 
-    // Prepare SQL statement to update the announcement
-    $stmt = $pdo->prepare("
-        UPDATE annonces
-        SET 
-            title = :title,
-            price = :price,
-            address = :address,
-            superficie = :superficie,
-            type = :type,
-            description = :description
-        WHERE id = :id
-    ");
+$stmt->bindParam(':title', $title);
+$stmt->bindParam(':category', $category);
+$stmt->bindParam(':price', $price);
+$stmt->bindParam(':address', $address);
+$stmt->bindParam(':surface', $surface);
+$stmt->bindParam(':type', $type);
+$stmt->bindParam(':description', $description);
+$stmt->bindParam(':area', $area);
+$stmt->bindParam(':zip_code', $zip_code);
+$stmt->bindParam(':city', $city);
+$stmt->bindParam(':country', $country);
+$stmt->bindParam(':property_id', $property_id);
+$stmt->execute();
 
-    // Bind parameters
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-    $stmt->bindParam(':price', $price, PDO::PARAM_INT);
-    $stmt->bindParam(':address', $address, PDO::PARAM_STR);
-    $stmt->bindParam(':superficie', $superficie, PDO::PARAM_INT);
-    $stmt->bindParam(':type', $type, PDO::PARAM_STR);
-    $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+// prepare and bind the update statement for images_gallery table
+$stmt2 = $conn->prepare("UPDATE images_gallery SET primary_or_secondary = :primary_or_secondary, image_path = :image_path WHERE image_id = :image_id AND property_id = :property_id");
 
-    // Execute the statement
-    $stmt->execute();
-
-    // Check if primary image is uploaded
-    if (isset($_FILES['primary_image']) && $_FILES['primary_image']['error'] === 0) {
-
-        // Get the file details
-        $fileName = $_FILES['primary_image']['name'];
-        $fileSize = $_FILES['primary_image']['size'];
-        $fileTmpName = $_FILES['primary_image']['tmp_name'];
-        $fileType = $_FILES['primary_image']['type'];
-
-        // Get the file extension
-        $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-
-        // Generate a unique file name
-        $newFileName = uniqid() . '.' . $fileExt;
-
-        // Move the uploaded file to the desired directory
-        move_uploaded_file($fileTmpName, 'uploads/' . $newFileName);
-
-        // Prepare SQL statement to update the primary image
-        $stmt = $pdo->prepare("
-            UPDATE annonces
-            SET primary_image = :primary_image
-            WHERE id = :id
-        ");
-
-        // Bind parameters
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':primary_image', $newFileName, PDO::PARAM_STR);
-
-        // Execute the statement
-        $stmt->execute();
+// loop through the uploaded images
+for ($i = 0; $i < count($_FILES['image']['name']); $i++) {
+  $image_id = $_POST['image_id'][$i];
+  $filename = $_FILES['image']['name'][$i];
+  $filetmp = $_FILES['image']['tmp_name'][$i];
+  $filesize = $_FILES['image']['size'][$i];
+  if ($filesize > 0) {
+    $filetype = $_FILES['image']['type'][$i];
+    $fileext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    // determine if the image is a primary or secondary image
+    if ($i == 0) {
+      // generate a unique filename for the uploaded image
+      $unique_filename = "primary." . uniqid() .".".$fileext;
+      $primary_or_secondary = "1";
+    } else {
+      // generate a unique filename for the uploaded image
+      $unique_filename = "secondary." . uniqid() .".".$fileext;
+      $primary_or_secondary = "0";
     }
-
-// Check if secondary images are uploaded
-if (!empty($_FILES['secondary_image'])) {
-    // Loop through the files array
-    foreach ($_FILES['secondary_image']['name'] as $key => $name) {
-        // Check if file was uploaded successfully
-        if ($_FILES['secondary_image']['error'][$key] === UPLOAD_ERR_OK) {
-            // Get the file details
-            $fileName = $_FILES['secondary_image']['name'][$key];
-            $fileSize = $_FILES['secondary_image']['size'][$key];
-            $fileTmpName = $_FILES['secondary_image']['tmp_name'][$key];
-            $fileType = $_FILES['secondary_image']['type'][$key];
-
-            // Get the file extension
-            $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-
-            // Generate a unique file name
-            $newFileName = uniqid() . '.' . $fileExt;
-
-            // Move the uploaded file to the desired directory
-            move_uploaded_file($fileTmpName, 'uploads/' . $newFileName);
-
-            // Prepare SQL statement to insert the secondary image
-            $stmt = $pdo->prepare("
-                INSERT INTO secondary_images (announcement_id, image)
-                VALUES (:announcement_id, :image)
-            ");
-
-            // Bind parameters
-            $stmt->bindParam(':announcement_id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':image', $newFileName, PDO::PARAM_STR);
-
-            // Execute the statement
-            $stmt->execute();
-        }
+    // delete the existing file
+    $image_path_query = $conn->prepare("SELECT image_path FROM images_gallery WHERE image_id = :image_id AND property_id = :property_id");
+    $image_path_query->bindParam(':image_id', $image_id);
+    $image_path_query->bindParam(':property_id', $property_id);
+    $image_path_query->execute();
+    $image_path_result = $image_path_query->fetch(PDO::FETCH_ASSOC);
+    if ($image_path_result) {
+      unlink($image_path_result['image_path']);
     }
+    // move the uploaded image to the images folder
+    move_uploaded_file($filetmp, "images/" . $unique_filename);
+    $file_path = "images/" . $unique_filename;
+    // bind the parameters and execute the update statement
+    $stmt2->bindParam(':primary_or_secondary', $primary_or_secondary);
+    $stmt2->bindParam(':image_path', $file_path);
+    $stmt2->bindParam(':image_id', $image_id);
+    $stmt2->bindParam(':property_id', $property_id);
+    $stmt2->execute();
+  }
 }
-}
-?>  
+
+$conn->commit(); // Commit the transaction
+
+// Redirect to another PHP file
+header("Location: profile.php");
+exit;

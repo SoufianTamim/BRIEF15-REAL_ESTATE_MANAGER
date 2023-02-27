@@ -1,13 +1,16 @@
 <?php
+// MySQL database configuration
+$host = 'localhost';
+$dbname = 'real_estate_agency';
+$user = 'root';
+$password = '';
 
-$servername = "localhost";
-$username = "root"; 
-$password = "";
-$dbname = "Homes_Agency";
-
-// create a new PDO instance that represents a connection to a database.
+// Establish database connection using PDO
 try {
-  $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // echo "Connected successfully";
 } catch(PDOException $e) {
-  echo "Connection failed: " . $e->getMessage(); //if there is an error display it
+    echo "Connection failed: " . $e->getMessage();
 }
+?>
