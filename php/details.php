@@ -1,11 +1,30 @@
 <?php 
 require "connect.php";//connect to the db
+
 if(isset($_GET["id"])){//check the id
   $id = $_GET["id"];
+
+  $query = "SELECT real_estate_gallery.*, images_gallery.*
+          FROM real_estate_gallery
+          INNER JOIN images_gallery ON real_estate_gallery.id = images_gallery.property_id 
+          WHERE `id` = $id
+          ";
+  $ads = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
+
+  // echo "<pre>";
+  // print_r($ads);
+  // echo "</pre>";
+
+
+
   //store the request for annouce table and run it
-  $query = $conn->query("SELECT * FROM Annonce WHERE `id` = $id"); 
+  $query = $conn->query("SELECT * FROM real_estate_gallery WHERE `id` = $id"); 
   $array = $query->fetch(PDO::FETCH_ASSOC);
+  $queryPHONE = $conn->query("SELECT * FROM users WHERE `id` = $id"); 
+  $arrayPHONE = $queryPHONE->fetch(PDO::FETCH_ASSOC);
+
 } 
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,51 +45,74 @@ if(isset($_GET["id"])){//check the id
           <button class="btn"><a href="user.php">Back home</a></button>
           <div class = "img-display">
             <div class = "img-showcase">
-              <img src = "../img/1.png" alt = "shoe image">
-              <img src = "../img/2.png" alt = "shoe image">
-              <img src = "../img/3.png" alt = "shoe image">
-              <img src = "../img/4.png" alt = "shoe image">
+              <?php
+              foreach ($ads as $ad) {
+                  if ($ad['primary_or_secondary'] == 1) {
+                      echo '<img src="../' . $ad['image_path'] . '" alt = "shoe image2">';
+                  }
+              }
+              ?>
+
+              <?php
+              $count = 0;
+              foreach ($ads as $ad) {
+                  if ($ad['primary_or_secondary'] == 0) {
+                      echo '
+                        <img src="../' . $ad['image_path'] . '"  alt = "shoe image1">';
+                      $count++;
+                      if ($count == 3) {
+                          break;
+                      }
+                  }
+              }
+              ?>
             </div>
           </div>
           <div class = "img-select">
             <div class = "img-item">
               <a href = "#" data-id = "1">
-                <img src = "../img/1.png" alt = "shoe image1">
+                <?php
+              foreach ($ads as $ad) {
+                  if ($ad['primary_or_secondary'] == 1) {
+                    echo '<img src="../' . $ad['image_path'] . '" alt = "shoe image2" > ';  }  }
+              ?>
               </a>
             </div>
-            <div class = "img-item">
-              <a href = "#" data-id = "2">
-                <img src = "../img/2.png" alt = "shoe image2">
-              </a>
-            </div>
-            <div class = "img-item">
-              <a href = "#" data-id = "3">
-                <img src = "../img/3.png" alt = "shoe image3">
-              </a>
-            </div>
-            <div class = "img-item">
-              <a href = "#" data-id = "4">
-                <img src = "../img/4.png" alt = "shoe image4">
-              </a>
-            </div>
+
+            <?php
+              $count = 0;
+              $img_count = 2;
+              foreach ($ads as $ad) {
+                  if ($ad['primary_or_secondary'] == 0) {  ?>
+                        <div class = "img-item">
+                          <a href = "#" data-id = "<?php echo $img_count ?>">
+                            <img src="../<?php echo $ad['image_path'] ?>" alt = "shoe image2">
+                          </a>
+                        </div>
+                        <?php
+                      $count++;
+                      $img_count++;
+              if ($count == 3) {  break; } } 
+              } ?>
+
           </div>
         </div>
         <div class = "product-content">
-          <h2 class = "product-title"><?php if(isset($_GET["id"])){echo $array["Tittle"];} ?></h2>
-          <a href = "#" class = "product-link"><?php if(isset($_GET["id"])){echo $array["Category"];} ?></a>
+        <h2 class = "product-title"><?php if(isset($_GET["id"])){echo $array["title"];} ?></h2>
+          <a href = "#" class = "product-link"><?php if(isset($_GET["id"])){echo $array["type"];} ?></a>
           <div class = "product-price">
-            <p class = "new-price">Price: <span><?php if(isset($_GET["id"])){echo $array["Price"];} ?> DH</span></p>
+            <p class = "new-price">Price: <span><?php if(isset($_GET["id"])){echo $array["price"];} ?> DH</span></p>
           </div>
           <div class = "product-detail">
-            <h2>Description :</h2>
-            <p><?php if(isset($_GET["id"])){echo $array["Descripton"];} ?></p>
             <ul>
-              <li>Size : <span><?php if(isset($_GET["id"])){echo $array["Size"];} ?> m2</span></li>
-              <li>Category: <span><?php if(isset($_GET["id"])){echo $array["Category"];} ?></span></li>
-              <li>Location : <span><?php if(isset($_GET["id"])){echo $array["Country"];} ?>,<?php if(isset($_GET["id"])){echo $array["City"];} ?></span></li>
-              <li>Publication Date: <span><?php if(isset($_GET["id"])){echo $array["PublishDate"];} ?></span></li>
-              <li>Zip Code: <span><?php if(isset($_GET["id"])){echo $array["ZipCode"];} ?></span></li>
+              <li>Size : <span><?php if(isset($_GET["id"])){echo $array["surface"];} ?> m2</span></li>
+              <li>Category: <span><?php if(isset($_GET["id"])){echo $array["category"];} ?></span></li>
+              <li>Location : <span><?php if(isset($_GET["id"])){echo $array["address"];} ?></span></li>
+              <li>Publication Date: <span><?php if(isset($_GET["id"])){echo $array["publication_date"];} ?></span></li>
+              <li>Zip Code: <span><?php if(isset($_GET["id"])){echo $array["zip_code"];} ?></span></li>
             </ul>
+            <h2>Description :</h2>
+            <p><?php if(isset($_GET["id"])){echo $array["description"];} ?></p>
           </div>
           <div class="purchase-info">
             <button class="btn" onclick="document.getElementById('product_info').style.display='block';" id="del">Contact Seller</button>
@@ -87,7 +129,7 @@ if(isset($_GET["id"])){//check the id
           <hr>
           <div id="message">
             <h3>that is the seller number :</h3>
-            <p><?php if(isset($_GET["id"])){echo $array["Phone"];} ?></p>
+            <h2><?php if(isset($_GET["id"])){echo $arrayPHONE["phone_number"];} ?></h2>
           </div>
           <hr>
           <div class="btns">

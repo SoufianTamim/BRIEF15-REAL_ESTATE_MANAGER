@@ -14,7 +14,7 @@ body{
     margin: 0 auto;
 }
 img{
-    width: 100%;
+    width: 40%;
     display: block;
 }
 .img-display{
@@ -33,6 +33,7 @@ img{
 }
 .img-item{
     margin: 0.3rem;
+    width: 100%;
 }
 .img-item:nth-child(1),
 .img-item:nth-child(2),

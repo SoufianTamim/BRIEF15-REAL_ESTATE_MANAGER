@@ -1,21 +1,8 @@
 <?php
   // Start a session to store user information
   session_start();
-  // include ("connect.php");
-  $error = ""; 
-
-  // //Connect to the MySQL database
-  // $servername = "localhost";
-  // $username = "root";
-  // $password = "";
-  // $dbname = "real_estate_agency";
-  // $conn = new mysqli($servername, $username, $password, $dbname);
-
-  // // Check for errors connecting to the database
-  // if ($conn->connect_error) {
-  //   die("Connection failed: " . $conn->connect_error);
-  // }
   require "connect.php";
+  $error = ""; 
 
   // Get the email and password submitted from the login form
   $email = isset($_POST['Email']) ? $_POST['Email'] : '';

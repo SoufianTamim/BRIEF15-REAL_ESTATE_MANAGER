@@ -72,7 +72,8 @@ try {
       </div>
 
       <!-- Secondary image input fields -->
-      <?php $id =  $ad["id"]; foreach ($ads as $i => $ad) {
+      <?php $id =  $ad["id"]; 
+      foreach ($ads as $i => $ad) {
         if ($ad['primary_or_secondary'] == '0' && $ad["id"] == $id) {
       ?>
         <div class="secondary-image-wrapper file-input d-md-flex flex-column justify-content-center align-items-center mb-3 w-25  d-flex">
