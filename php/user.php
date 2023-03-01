@@ -9,6 +9,7 @@ require 'navbar.php';
 
 
 
+
 if(isset($_POST['searchbtn'])){
     // retrieve the form inputs using $_POST and store them in the $queryParams array
 if(!empty($_POST['city'])) {

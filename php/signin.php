@@ -19,6 +19,8 @@
   if (!empty($result)) {
     // Login successful, set session variables and redirect to home page
     $_SESSION['user_email'] = $result['email_address'];
+    $_SESSION['id'] = $result['id'];
+
     header("Location: user.php");
   } else {
     // Login failed, redirect back to login page with error message

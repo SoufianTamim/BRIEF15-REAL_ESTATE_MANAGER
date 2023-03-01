@@ -1,9 +1,11 @@
 <?php
 require('connect.php');
-$user_id = 1; // Replace 1 with the actual user ID
-$sql = "SELECT first_name, last_name, phone_number, email_address, password FROM users WHERE id = ?";
+
+
+$user_email = $_SESSION['user_email']; // Replace 1 with the actual user ID
+$sql = "SELECT first_name, last_name, phone_number, email_address, password FROM users WHERE email_address = ?";
 $stmt = $conn->prepare($sql);
-$stmt->execute([$user_id]);
+$stmt->execute([$user_email]);
 
 if ($stmt->rowCount() > 0) {
   $row = $stmt->fetch(PDO::FETCH_ASSOC);

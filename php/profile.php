@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
-<?php require('connect.php'); ?>
+<?php 
+session_start();
+
+require('connect.php');
+
+if(isset($_SESSION['user_email'])){
+  echo $_SESSION['user_email'];
+}
+
+?>
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
@@ -54,7 +63,7 @@
           <input type="file" name="images[]" id="fileUpload<?php echo $i; ?>" />
           <img class="previewImage" id="previewImage1<?php echo $i; ?>" src="#" alt="Image Preview" />
         </div>
-      <?php } ?>
+      <?php }  ?>
 </div>
 
 
