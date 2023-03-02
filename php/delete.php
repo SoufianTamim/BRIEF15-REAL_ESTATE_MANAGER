@@ -1,4 +1,6 @@
 <?php
+session_start();
+echo $_SESSION['user_id'];
 require_once 'connect.php';
 
 if (isset($_POST['delete'])) {
@@ -6,16 +8,15 @@ if (isset($_POST['delete'])) {
     $conn->beginTransaction(); // Begin the transaction
 
     // Get the property ID to delete from the form input
-    $property_id = $_POST['property_id'];
-
+    $ad_id = $_POST['ad_id'];
     // Delete the images associated with the property from the images_gallery table
-    $stmt = $conn->prepare("DELETE FROM images_gallery WHERE property_id = :property_id");
-    $stmt->bindParam(':property_id', $property_id);
+    $stmt = $conn->prepare("DELETE FROM images_gallery WHERE ad_id = :ad_id");
+    $stmt->bindParam(':ad_id', $ad_id);
     $stmt->execute();
 
     // Delete the property from the real_estate_gallery table
-    $stmt = $conn->prepare("DELETE FROM real_estate_gallery WHERE id = :property_id");
-    $stmt->bindParam(':property_id', $property_id);
+    $stmt = $conn->prepare("DELETE FROM advertisement WHERE ad_id = :ad_id");
+    $stmt->bindParam(':ad_id', $ad_id);
     $stmt->execute();
 
     // Commit the transaction

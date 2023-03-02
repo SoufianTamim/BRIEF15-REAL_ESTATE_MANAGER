@@ -1,5 +1,4 @@
 <?php
-
 include "connect.php"; // ====== connect to the database
 
    $error_email="";
@@ -9,7 +8,7 @@ include "connect.php"; // ====== connect to the database
    $Phone =$_GET["phone"];
    $Password = $_GET["password"];
    $hashed_password = MD5($Password);
-   $query = "SELECT `email_address`,`phone_number` FROM `users` WHERE `email_address`='$Email'  OR `phone_number`='$Phone'";
+   $query = "SELECT `email`,`phone_number` FROM `users` WHERE `email`='$Email'  OR `phone_number`='$Phone'";
    //retrieve a single row from the result set of the query and store it in the variable "$Result"
    $Resultq = $conn->query($query)->fetch();
 
@@ -19,7 +18,7 @@ if(empty($Resultq)){
    if ( true ){
 
       $sql = "INSERT INTO `users` 
-      (`first_name`, `last_name`, `email_address`, `phone_number`, `password`)
+      (`first_name`, `last_name`, `email`, `phone_number`, `password`)
       VALUES 
       ('$Fname' , '$Lname', '$Email', '$Phone', '$hashed_password')";
       // send a request to the db and insert into the values of inputs 

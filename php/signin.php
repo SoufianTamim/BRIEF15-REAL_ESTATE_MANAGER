@@ -11,15 +11,15 @@
 
   if(!empty($email) && !empty($password)){
   // Query the database for a user with the submitted email and password
-  $sql = "SELECT * FROM `users` WHERE `email_address`='$email' AND `password`='$hashed_password'";
+  $sql = "SELECT * FROM `users` WHERE `email`='$email' AND `password`='$hashed_password'";
 
-  $result = $conn->query($sql)->fetch();
-
+  $result = $conn->query($sql)->fetch(PDO::FETCH_ASSOC);
+  echo $result['user_id'];
   // Check if the query returned a result
   if (!empty($result)) {
     // Login successful, set session variables and redirect to home page
-    $_SESSION['user_email'] = $result['email_address'];
-    $_SESSION['id'] = $result['id'];
+    $_SESSION['user_email'] = $result['email'];
+    $_SESSION['user_id'] = $result['user_id'];
 
     header("Location: user.php");
   } else {

@@ -1,16 +1,18 @@
 <?php
 require('connect.php');
 
-// Prepare and execute the query to fetch ad data  
-$query = "SELECT real_estate_gallery.*, images_gallery.*
-          FROM real_estate_gallery
-          INNER JOIN images_gallery ON real_estate_gallery.id = images_gallery.property_id
-          ";
+// Prepare and execute the query to fetch ad data 
+$user_email = $_SESSION['user_email']; 
+$query = "SELECT advertisement.*, images_gallery.*, users.email AS user_email
+          FROM advertisement
+          INNER JOIN images_gallery ON advertisement.ad_id = images_gallery.ad_id
+          INNER JOIN users ON advertisement.user_id = users.user_id
+          WHERE users.email = ?";
 try {
-  $stmt = $conn->query($query);
+  $stmt = $conn->prepare($query);
+  $stmt->execute([$user_email]);
   $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  $ads = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
   if (!$ads) {
     echo "No ads found!";
   }
@@ -19,6 +21,7 @@ try {
   exit;
 }
 ?>
+
 <?php foreach ($ads as $ad) : if ($ad['primary_or_secondary'] == 1) {  ?>
     <!-- Display the ad data in HTML -->
     <div class="card" style="width: 18rem;">
@@ -31,21 +34,21 @@ try {
         <p class="card-text"><iconify-icon icon="material-symbols:location-on"></iconify-icon><span class="fw-bold"><?php echo $ad['city'] . ' ' . $ad['area'] . ' ' . $ad['address']; ?></span></p>
         <p class="card-text">Price: <span class="fw-bold">$<?php echo $ad['price']; ?></span></p>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <a href="#" class="btn btn-outline-warning rounded-circle me-md-2" role="button" data-bs-toggle="modal" data-bs-target="#edit<?php echo $ad["id"] ?>"><iconify-icon icon="material-symbols:edit-document-sharp"></iconify-icon></a>
-          <a href="#" class="btn btn-outline-danger rounded-circle" data-bs-toggle='modal' data-bs-target="#deletee<?php echo $ad["id"] ?>" role="button" value='<?php echo $ad['id']; ?>'><iconify-icon icon="material-symbols:auto-delete"></iconify-icon></a>
-          <a href="#" class="btn btn-primary" role="button">View Details</a>
+          <a href="#" class="btn btn-outline-warning rounded-circle me-md-2" role="button" data-bs-toggle="modal" data-bs-target="#edit<?php echo $ad["ad_id"] ?>"><iconify-icon icon="material-symbols:edit-document-sharp"></iconify-icon></a>
+          <a href="#" class="btn btn-outline-danger rounded-circle" data-bs-toggle='modal' data-bs-target="#deletee<?php echo $ad["ad_id"] ?>" role="button" value='<?php echo $ad['ad_id']; ?>'><iconify-icon icon="material-symbols:auto-delete"></iconify-icon></a>
+          <a  class="btn btn-primary" role="button" href="details.php?ad_id=<?php echo $ad['ad_id']; ?>">View Details</a>
         </div>
       </div>
     </div>
   <?php } ?>
   <!-- Modal delete -->
-  <div class="modal" id="deletee<?php echo $ad["id"] ?>" aria-hidden="true">
+  <div class="modal" id="deletee<?php echo $ad["ad_id"] ?>" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content h-25">
         <div class="modal-body texte-white bgmodal">
           <h3>étes vous sure de vouloir supprimer</h3>
           <form method="post" action="delete.php">
-            <input type="hidden" name="property_id" value="<?php echo $ad['id']; ?>" id="delete_id<?php echo $ad['id']; ?>">
+            <input type="hidden" name="ad_id" value="<?php echo $ad['ad_id']; ?>" id="delete_id<?php echo $ad['ad_id']; ?>">
             <button type="submit" name="delete">Supprimer</button>
             <button type="button" class="btn btn-secondary buttons" data-bs-dismiss="modal">Annuler</button>
           </form>
@@ -54,12 +57,12 @@ try {
     </div>
   </div>
   <!-- Modal edit-->
-  <div class="modal fade h-5" id="edit<?php echo $ad["id"] ?>" tabindex="-1" aria-hidden="true">
+  <div class="modal fade h-5" id="edit<?php echo $ad["ad_id"] ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content h-25">
         <div class="modal-body  bgmodal">
         <form action="update.php" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="property_id" value="<?php echo $ad['id']; ?>">
+  <input type="hidden" name="ad_id" value="<?php echo $ad['ad_id']; ?>">
   <div class="container">
     <h2>Modifier l'annonce</h2>
     <div class="container d-flex gap-2">
@@ -72,9 +75,9 @@ try {
       </div>
 
       <!-- Secondary image input fields -->
-      <?php $id =  $ad["id"]; 
+      <?php $id =  $ad["ad_id"]; 
       foreach ($ads as $i => $ad) {
-        if ($ad['primary_or_secondary'] == '0' && $ad["id"] == $id) {
+        if ($ad['primary_or_secondary'] == '0' && $ad["ad_id"] == $id) {
       ?>
         <div class="secondary-image-wrapper file-input d-md-flex flex-column justify-content-center align-items-center mb-3 w-25  d-flex">
           <img class='icon' id="icon<?php echo $i + 1; ?>" src="cloud-upload.svg" alt="Upload Icon" />

@@ -1,13 +1,13 @@
 <?php 
 require "connect.php";//connect to the db
 
-if(isset($_GET["id"])){//check the id
-  $id = $_GET["id"];
+if(isset($_GET["ad_id"])){//check the id
+  $id = $_GET["ad_id"];
 
-  $query = "SELECT real_estate_gallery.*, images_gallery.*
-          FROM real_estate_gallery
-          INNER JOIN images_gallery ON real_estate_gallery.id = images_gallery.property_id 
-          WHERE `id` = $id
+  $query = "SELECT advertisement.*, images_gallery.*
+          FROM advertisement
+          NATURAL JOIN images_gallery 
+         where `ad_id`= $id
           ";
   $ads = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
 
@@ -18,9 +18,9 @@ if(isset($_GET["id"])){//check the id
 
 
   //store the request for annouce table and run it
-  $query = $conn->query("SELECT * FROM real_estate_gallery WHERE `id` = $id"); 
+  $query = $conn->query("SELECT * FROM advertisement WHERE `ad_id` = $id"); 
   $array = $query->fetch(PDO::FETCH_ASSOC);
-  $queryPHONE = $conn->query("SELECT * FROM users WHERE `id` = $id"); 
+  $queryPHONE = $conn->query("SELECT * FROM users WHERE `user_id` = $id"); 
   $arrayPHONE = $queryPHONE->fetch(PDO::FETCH_ASSOC);
 
 } 
@@ -52,7 +52,6 @@ if(isset($_GET["id"])){//check the id
                   }
               }
               ?>
-
               <?php
               $count = 0;
               foreach ($ads as $ad) {
@@ -98,21 +97,21 @@ if(isset($_GET["id"])){//check the id
           </div>
         </div>
         <div class = "product-content">
-        <h2 class = "product-title"><?php if(isset($_GET["id"])){echo $array["title"];} ?></h2>
-          <a href = "#" class = "product-link"><?php if(isset($_GET["id"])){echo $array["type"];} ?></a>
+        <h2 class = "product-title"><?php if(isset($_GET["ad_id"])){echo $array["title"];} ?></h2>
+          <a href = "#" class = "product-link"><?php if(isset($_GET["ad_id"])){echo $array["type"];} ?></a>
           <div class = "product-price">
-            <p class = "new-price">Price: <span><?php if(isset($_GET["id"])){echo $array["price"];} ?> DH</span></p>
+            <p class = "new-price">Price: <span><?php if(isset($_GET["ad_id"])){echo $array["price"];} ?> DH</span></p>
           </div>
           <div class = "product-detail">
             <ul>
-              <li>Size : <span><?php if(isset($_GET["id"])){echo $array["surface"];} ?> m2</span></li>
-              <li>Category: <span><?php if(isset($_GET["id"])){echo $array["category"];} ?></span></li>
-              <li>Location : <span><?php if(isset($_GET["id"])){echo $array["address"];} ?></span></li>
-              <li>Publication Date: <span><?php if(isset($_GET["id"])){echo $array["publication_date"];} ?></span></li>
-              <li>Zip Code: <span><?php if(isset($_GET["id"])){echo $array["zip_code"];} ?></span></li>
+              <li>Size : <span><?php if(isset($_GET["ad_id"])){echo $array["surface"];} ?> m2</span></li>
+              <li>Category: <span><?php if(isset($_GET["ad_id"])){echo $array["category"];} ?></span></li>
+              <li>Location : <span><?php if(isset($_GET["ad_id"])){echo $array["address"];} ?></span></li>
+              <li>Publication Date: <span><?php if(isset($_GET["ad_id"])){echo $array["publication_date"];} ?></span></li>
+              <li>Zip Code: <span><?php if(isset($_GET["ad_id"])){echo $array["zip_code"];} ?></span></li>
             </ul>
             <h2>Description :</h2>
-            <p><?php if(isset($_GET["id"])){echo $array["description"];} ?></p>
+            <p><?php if(isset($_GET["ad_id"])){echo $array["description"];} ?></p>
           </div>
           <div class="purchase-info">
             <button class="btn" onclick="document.getElementById('product_info').style.display='block';" id="del">Contact Seller</button>
@@ -129,7 +128,7 @@ if(isset($_GET["id"])){//check the id
           <hr>
           <div id="message">
             <h3>that is the seller number :</h3>
-            <h2><?php if(isset($_GET["id"])){echo $arrayPHONE["phone_number"];} ?></h2>
+            <h2><?php if(isset($_GET["ad_id"])){echo $arrayPHONE["phone_number"];} ?></h2>
           </div>
           <hr>
           <div class="btns">

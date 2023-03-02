@@ -1,18 +1,18 @@
 <?php
 require('connect.php');
 
-
-$user_email = $_SESSION['user_email']; // Replace 1 with the actual user ID
-$sql = "SELECT first_name, last_name, phone_number, email_address, password FROM users WHERE email_address = ?";
+$user_email = $_SESSION["user_email"];
+$sql = "SELECT first_name, last_name, phone_number, email, password FROM users WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->execute([$user_email]);
+
 
 if ($stmt->rowCount() > 0) {
   $row = $stmt->fetch(PDO::FETCH_ASSOC);
   $first_name = $row["first_name"];
   $last_name = $row["last_name"];
   $phone_number = $row["phone_number"];
-  $email = $row["email_address"];
+  $email = $row["email"];
   $password = $row["password"];
 
   // Replace HB with the user's initials
@@ -23,15 +23,15 @@ if ($stmt->rowCount() > 0) {
 
 ?>
   <!-- Display user's information using HTML code -->
-  <div class="profilinfo d-flex gap-5 " style="height: 320px; padding: 0%;">
-    <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center" style="width: 300px; height: 300px;">
+  <div class="profilinfo d-flex gap-5 " style="height: 320px; padding: 0%; margin-top:89px;">
+    <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center" style="width: 150px; height: 150px;margin-top:89px;margin-left:89px;">
       <span class="text-white display-1 font-weight-bold"><?php echo $initials; ?></span>
     </div>
-    <div class="userinfo bg-light p-4 rounded w-50 m-5">
+    <div class="userinfo bg-light p-4 rounded w-50 ">
       <p class="card-text">First name: <span class="fw-bold"><?php echo  $row["first_name"]; ?></span></p>
       <p class="card-text">Last name: <span class="fw-bold"><?php echo $row["last_name"]; ?></span></p>
       <p class="card-text">Phone number: <span class="fw-bold"><?php echo $row["phone_number"];; ?></span></p>
-      <p class="card-text">Email: <span class="fw-bold"><?php echo $row["email_address"]; ?></span></p>
+      <p class="card-text">Email: <span class="fw-bold"><?php echo $row["email"]; ?></span></p>
       <p class="card-text">Password: <span class="fw-bold"><?php echo $row["password"]; ?></span></p>
       <div class="editprofil"><button  type="button" class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#editModal" >Edit <iconify-icon icon="material-symbols:edit"></iconify-icon></button></div>
     </div>
@@ -60,7 +60,7 @@ if ($stmt->rowCount() > 0) {
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?php echo $row["email_address"]; ?>">
+            <input type="email" class="form-control" id="email" name="email" value="<?php echo $row["email"]; ?>">
           </div>
           <div class="mb-3">
             <label for="currentPassword" class="form-label">Current Password</label>
@@ -74,12 +74,11 @@ if ($stmt->rowCount() > 0) {
             <label for="confirmPassword" class="form-label">Confirm New Password</label>
             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
           </div>
-          <input type="hidden" name="userId" value="<?php echo $userId; ?>">
+          <input type="hidden" name="userId" value="<?php echo $user_id; ?>">
           <button type="submit" class="btn btn-primary" name="editUser">Save Changes</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-
 

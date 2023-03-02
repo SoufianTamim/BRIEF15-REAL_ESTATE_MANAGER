@@ -14,7 +14,7 @@ function not_auth_redirect(){
 
 
 function auth_redirect(){
-	if(auth()) {
+	if(authenticated()) {
   header("location:profile.php");
 	}
 }

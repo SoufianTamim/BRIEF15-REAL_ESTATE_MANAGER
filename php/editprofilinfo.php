@@ -2,14 +2,14 @@
 require('connect.php');
 
 // Retrieve user ID from the hidden field in the form
-$userId = 1;
-// $userId = $_POST['userId'];
+$user_id = 1;
+// $user_id = $_POST['user_id'];
 
 // Retrieve user data from the database
 // Replace with your own code to retrieve user data from the database
 $dbh = new PDO("mysql:host=localhost;dbname=real_estate_agency", "root", "");
-$stmt = $dbh->prepare("SELECT * FROM users WHERE id = :userId");
-$stmt->bindParam(':userId', $userId);
+$stmt = $dbh->prepare("SELECT * FROM users WHERE id = :user_id");
+$stmt->bindParam(':user_id', $user_id);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,13 +29,13 @@ if ($currentPassword === $row['password']) {
 
     // Update the user data in the database
     // Replace with your own code to update user data in the database
-    $stmt = $dbh->prepare("UPDATE users SET first_name = :firstName, last_name = :lastName, phone_number = :phoneNumber, email_address = :email, password = :password WHERE id = :userId");
+    $stmt = $dbh->prepare("UPDATE users SET first_name = :firstName, last_name = :lastName, phone_number = :phoneNumber, email = :email, password = :password WHERE id = :user_id");
     $stmt->bindParam(':firstName', $firstName);
     $stmt->bindParam(':lastName', $lastName);
     $stmt->bindParam(':phoneNumber', $phoneNumber);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':password', $newPassword);
-    $stmt->bindParam(':userId', $userId);
+    $stmt->bindParam(':user_id', $user_id);
     $stmt->execute();
 
     echo "User data updated successfully.";

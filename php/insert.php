@@ -1,5 +1,7 @@
 <?php
 require_once 'connect.php';
+session_start();
+echo $_SESSION['user_id'];
 
 try {
   
@@ -16,12 +18,12 @@ try {
   $area = $_POST['area'];
   $zip_code = $_POST['zipCode'];
   $city = $_POST['city'];
-  $country = $_POST['country'];
+  $country = $_POST['country']; 
+  $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+  
 
-  $user_id = 5;
-
-  // Inserting data into real_estate_gallery table
-  $stmt = $conn->prepare("INSERT INTO real_estate_gallery (user_id, title, category, price, address, surface, type, description, area, zip_code, city, country) 
+  // Inserting data into advertisement table
+  $stmt = $conn->prepare("INSERT INTO advertisement (user_id, title, category, price, address, surface, type, description, area, zip_code, city, country) 
                         VALUES (:user_id, :title, :category, :price, :address, :surface, :type, :description, :area, :zip_code, :city, :country)");
 
   $stmt->bindParam(':user_id', $user_id);
@@ -40,10 +42,10 @@ try {
 
 
   // Get the ID of the inserted row
-  $property_id = $conn->lastInsertId();
+  $ad_id = $conn->lastInsertId();
 
   // prepare and bind the insert statement
-  $stmt = $conn->prepare("INSERT INTO images_gallery (primary_or_secondary, image_path, property_id) VALUES (:primary_or_secondary, :image_path, :property_id)");
+  $stmt = $conn->prepare("INSERT INTO images_gallery (primary_or_secondary, image_path, ad_id) VALUES (:primary_or_secondary, :image_path, :ad_id)");
 
   // loop through the uploaded images
   for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
@@ -64,12 +66,12 @@ try {
         $primary_or_secondary = "0";
       }
       // move the uploaded image to the images folder
-      move_uploaded_file($filetmp, "images/" . $unique_filename);
+      move_uploaded_file($filetmp, "../images/" . $unique_filename);
       $file_path ="images/". $unique_filename;
       // bind the parameters and execute the insert statement
       $stmt->bindParam(':primary_or_secondary', $primary_or_secondary);
       $stmt->bindParam(':image_path',$file_path);
-      $stmt->bindParam(':property_id', $property_id);
+      $stmt->bindParam(':ad_id', $ad_id);
       $stmt->execute();
     }
   }
